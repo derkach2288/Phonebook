@@ -5,7 +5,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class CreateAccountTests extends TestBase{
+public class LoginTests extends TestBase{
 
     @BeforeMethod
     public void  unsurePrecondition() {
@@ -15,9 +15,11 @@ public class CreateAccountTests extends TestBase{
             click(By.xpath("//button[.='Sign Out']"));
         }
     }
-    @Test
-    public void createExistedAccountNegativeTest() {
 
+
+    // click on Login link
+    @Test
+    public void loginPositiveTest() {
         // click on Login link
         click(By.cssSelector("[href='/login']"));
 
@@ -27,12 +29,14 @@ public class CreateAccountTests extends TestBase{
         //enter password
         type(By.name("password"), "Manuel1234$");
 
-        //click on the Registration button
-        click(By.name("registration"));
+        // click on the login button
+        click(By.name("login"));
 
-        //assert Sign Out button is present
-//        Assert.assertTrue(isElementPresent(By.xpath("//button[.='Sign Out']")));
-        Assert.assertTrue(isAlertAppears());
+        // assert Sign Out
+        Assert.assertTrue(isElementPresent(By.xpath("//button[.='Sign Out']")));
+
     }
+
+
 
 }
