@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.phonebook.tests.DeleteContactTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-03-04T10:48:42" hostname="Users-MBP" time="1.455">
+  <properties/>
+  <testcase name="removeContactTest" classname="com.phonebook.tests.DeleteContactTests" time="1.455"/>
+  <system-out><![CDATA[11:48:31.316 [Test worker] INFO  com.phonebook.tests.TestBase -- Start testremoveContactTestwith data: []
+11:48:43.992 [Test worker] INFO  com.phonebook.tests.TestBase -- PASSED: removeContactTest
+11:48:43.992 [Test worker] INFO  com.phonebook.tests.TestBase -- Stop test
+11:48:43.992 [Test worker] INFO  com.phonebook.tests.TestBase -- ***********************
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
