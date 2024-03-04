@@ -1,7 +1,5 @@
 .gradle
 
-build/
-
 setting.gradle
 
 gradlew

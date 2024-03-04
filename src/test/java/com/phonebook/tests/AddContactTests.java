@@ -1,12 +1,20 @@
 package com.phonebook.tests;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
+import com.phonebook.fw.DataProviders;
+import com.phonebook.models.Contact;
+import com.phonebook.models.User;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class AddContactTests extends TestBase{
@@ -15,74 +23,85 @@ public class AddContactTests extends TestBase{
     @BeforeMethod
     public void precondition() {
         // if login link is not present
-        if (!isElementPresent(By.cssSelector("[href='/login']"))) {
+        if (!app.getUser().isLoginLinkPresent()) {
             // click on Sign Out button
-            click(By.xpath("//button[.='Sign Out']"));
+            app.getUser().clickOnSignOutButton();
         }
 
         // click on Login link
-        click(By.cssSelector("[href='/login']"));
+        app.getUser().clickOnLoginLink();
 
         //enter email
-        type(By.name("email"), "derkach@gmail.com");
-
-        //enter password
-        type(By.name("password"), "Manuel1234$");
+        app.getUser().fillLoginRegisterForm(new User()
+                .setEmail("derkach@gmail.com")
+                .setPassword("Manuel1234$"));
 
         // click on the login button
-        click(By.name("login"));
+        app.getUser().clickOnLoginButton();
     }
 
     @Test
     public void addContactPositiveTest() {
         // click on Add link
-        click(By.cssSelector("[href='/add']"));
+        app.getContact().clickOnAddLink();
 
-        // enter name
-        type(By.cssSelector("input:nth-child(1)"), "Adam");
-
-        // enter lastName
-        type(By.cssSelector("input:nth-child(2)"), "Karl");
-
-        // enter phone
-        type(By.cssSelector("input:nth-child(3)"), "1234567890");
-
-        // enter email
-        type(By.cssSelector("input:nth-child(4)"), "adam@gmail.com");
-
-        // enter address
-        type(By.cssSelector("input:nth-child(5)"), "Berlin");
-
-        // enter description
-        type(By.cssSelector("input:nth-child(6)"), "goalkeeper");
-
+        app.getContact().fillContactForm(new Contact()
+                .setName("Adams")
+                .setLastName("Karlson")
+                .setPhone("1234567890")
+                .setEmail("adams@gmail.com")
+                .setAddress("Berlin")
+                .setDescription("goalkeeper"));
         // click on the Save button
-        click(By.cssSelector(".add_form__2rsm2 button"));
+        app.getContact().clickOnSaveButton();
 
         // assert Contact is added by text
-        Assert.assertTrue(isContactCreatedByText("Adam"));
+        Assert.assertTrue(app.getContact().isContactCreatedByText("Adam"));
 
     }
 
     @AfterMethod
     public void postCondition() {
-        // click on the card
-        click(By.cssSelector(".contact-item_card__2SOIM"));
-
-        // click on the Remove button
-        click(By.xpath("//button[.='Remove']"));
+        app.getContact().removeContact();
 
     }
 
-    public boolean isContactCreatedByText(String text) {
-        List<WebElement> contacts = driver.findElements(By.cssSelector("h2"));
-        for (WebElement element : contacts) {
-            if (element.getText().contains(text)) {
-                return true;
-            }
-        }
-        return false;
+
+    @Test(dataProvider = "addContact", dataProviderClass = DataProviders.class)
+    public void addContactPositiveTestFromDataProvider(String name, String lastname, String phone, String email, String address, String desc) {
+        // click on Add link
+        app.getContact().clickOnAddLink();
+
+        app.getContact().fillContactForm(new Contact()
+                .setName(name)
+                .setLastName(lastname)
+                .setPhone(phone)
+                .setEmail(email)
+                .setAddress(address)
+                .setDescription(desc));
+        // click on the Save button
+        app.getContact().clickOnSaveButton();
+
+        // assert Contact is added by text
+        Assert.assertTrue(app.getContact().isContactCreatedByText(name));
+
     }
+
+
+    @Test(dataProvider = "addContactFromCSV", dataProviderClass = DataProviders.class)
+    public void addContactPositiveTestFromDataProviderWithFile(Contact contact) {
+        // click on Add link
+        app.getContact().clickOnAddLink();
+
+        app.getContact().fillContactForm(contact);
+        // click on the Save button
+        app.getContact().clickOnSaveButton();
+
+        // assert Contact is added by text
+        Assert.assertTrue(app.getContact().isContactCreatedByText(contact.getName()));
+
+    }
+
 
 
 }

@@ -1,6 +1,7 @@
 package com.phonebook.tests;
 
-import org.openqa.selenium.By;
+import com.phonebook.models.Contact;
+import com.phonebook.models.User;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -11,77 +12,50 @@ public class DeleteContactTests extends TestBase{
     @BeforeMethod
     public void precondition() {
         // if login link is not present
-        if (!isElementPresent(By.cssSelector("[href='/login']"))) {
+        if (!app.getUser().isLoginLinkPresent()) {
             // click on Sign Out button
-            click(By.xpath("//button[.='Sign Out']"));
+            app.getUser().clickOnSignOutButton();
         }
 
         // click on Login link
-        click(By.cssSelector("[href='/login']"));
+        app.getUser().clickOnLoginLink();
 
         //enter email
-        type(By.name("email"), "derkach@gmail.com");
-
-        //enter password
-        type(By.name("password"), "Manuel1234$");
+        app.getUser().fillLoginRegisterForm(new User()
+                .setEmail("derkach@gmail.com")
+                .setPassword("Manuel1234$"));
 
         // click on the login button
-        click(By.name("login"));
+        app.getUser().clickOnLoginButton();
 
         // click on Add link
-        click(By.cssSelector("[href='/add']"));
+        app.getContact().clickOnAddLink();
 
         // enter name
-        type(By.cssSelector("input:nth-child(1)"), "Adams");
-
-        // enter lastName
-        type(By.cssSelector("input:nth-child(2)"), "Karlson");
-
-        // enter phone
-        type(By.cssSelector("input:nth-child(3)"), "1234567890");
-
-        // enter email
-        type(By.cssSelector("input:nth-child(4)"), "adams@gmail.com");
-
-        // enter address
-        type(By.cssSelector("input:nth-child(5)"), "Berlin");
-
-        // enter description
-        type(By.cssSelector("input:nth-child(6)"), "goalkeeper");
+        app.getContact().fillContactForm(new Contact()
+                .setName("Adams")
+                .setLastName("Karlson")
+                .setPhone("1234567890")
+                .setEmail("adams@gmail.com")
+                .setAddress("Berlin")
+                .setDescription("goalkeeper"));
 
         // click on the Save button
-        click(By.cssSelector(".add_form__2rsm2 button"));
+        app.getContact().clickOnSaveButton();
 
     }
 
     @Test
     public void removeContactTest() {
-        int sizeBefore = sizeOfContacts();
+        int sizeBefore = app.getContact().sizeOfContacts();
         // click on the card
-        click(By.cssSelector(".contact-item_card__2SOIM"));
+        app.getContact().removeContact();
 
-        // click on the Remove button
-        click(By.xpath("//button[.='Remove']"));
-
-        pause(1000);
-        int sizeAfter = sizeOfContacts();
+        app.getContact().pause(1000);
+        int sizeAfter = app.getContact().sizeOfContacts();
 
         // assert Contact is deleted by size
         Assert.assertEquals(sizeAfter, sizeBefore-1);
-    }
-
-    public void pause(int millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public int sizeOfContacts() {
-        if (isElementPresent(By.cssSelector(".contact-item_card__2SOIM"))) {
-            return driver.findElements(By.cssSelector(".contact-item_card__2SOIM")).size();
-        }
-        return 0;
     }
 
 }
